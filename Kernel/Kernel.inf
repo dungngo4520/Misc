@@ -1,0 +1,70 @@
+;
+; Kernel.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=USBDevice
+ClassGuid={88BAE032-5A81-49f0-BC3D-A4FF138216D6}
+Provider=%ManufacturerName%
+CatalogFile=Kernel.cat
+DriverVer=
+PnpLockDown=1
+
+[DestinationDirs]
+DefaultDestDir = 13
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+Kernel.sys  = 1,,
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NT$ARCH$.10.0...16299 ; %13% support introduced in build 16299
+
+[Standard.NT$ARCH$.10.0...16299]
+%Kernel.DeviceDesc%=Kernel_Device, USB\VID_vvvv&PID_pppp
+
+[Kernel_Device.NT]
+CopyFiles=File_Copy
+
+[File_Copy]
+Kernel.sys
+
+[Kernel_Device.NT.HW]
+AddReg=Kernel_AddReg
+
+[Kernel_AddReg]
+; By default, USBDevice class uses iProduct descriptor to name the device
+; Uncomment for this device to use %Kernel.DeviceDesc%
+;HKR,,FriendlyName,,%Kernel.DeviceDesc%
+
+;-------------- Service installation
+[Kernel_Device.NT.Services]
+AddService = Kernel,%SPSVCINST_ASSOCSERVICE%, Kernel_Service_Inst
+
+; -------------- Kernel driver install sections
+[Kernel_Service_Inst]
+DisplayName    = %Kernel.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %13%\Kernel.sys
+
+[Kernel_Device.NT.Wdf]
+KmdfService =  Kernel, Kernel_wdfsect
+
+[Kernel_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="<Your manufacturer name>" ;TODO: Replace with your manufacturer name
+DiskName = "Kernel Installation Disk"
+Kernel.DeviceDesc = "Kernel Device"
+Kernel.SVCDESC = "Kernel Service"
