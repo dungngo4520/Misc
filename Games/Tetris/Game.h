@@ -22,8 +22,7 @@ class Game {
 public:
     Game(int FPS);
     ~Game();
-    void Draw();
-    void HandleInput();
+
     void Loop();
 
 private:
@@ -36,14 +35,18 @@ private:
     std::mutex m_SignalMutex;
     std::map<SignalType, bool> m_Signals;
     std::map<IntervalWorkType, IntervalWork> m_IntervalWorks;
+    bool m_IsGameOver;
 
 private:
+    void Draw();
+    void HandleInput();
+    void Reset();
     std::unique_ptr<Block> GetRandomBlock();
-    void MoveBlockCenter();
     void MoveBlockLeft();
     void MoveBlockRight();
     void MoveBlockDown();
     void Calibrate();
+
     void Worker();
     void NotifySignal(SignalType signal, bool value);
 };

@@ -30,6 +30,15 @@ void Grid::Draw()
     }
 }
 
+void Grid::Clear()
+{
+    for (auto&& row : m_Tiles) {
+        for (auto&& tile : row) {
+            tile = {};
+        }
+    }
+}
+
 OutOfBoundDirection Grid::IsOutOfBounds(const Block& blocks)
 {
     auto cells = blocks.GetCells().at(blocks.GetRotate());
@@ -69,6 +78,9 @@ void Grid::AbsorbBlocks(const Block& blocks)
     auto cells = blocks.GetCells().at(blocks.GetRotate());
     for (auto&& cell : cells) {
         cell += blocks.GetPosition();
+        if (cell.x < 0 || cell.x >= m_Tiles[0].size() || cell.y < 0 || cell.y >= m_Tiles.size()) {
+            continue;
+        }
         m_Tiles[cell.y][cell.x] = GridTile{ true, global::Colors.at(blocks.GetColorId()) };
     }
 }

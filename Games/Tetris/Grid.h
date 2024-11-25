@@ -17,6 +17,7 @@ class Grid {
 public:
     Grid(int rows, int columns);
     void Draw();
+    void Clear();
     OutOfBoundDirection IsOutOfBounds(const Block& blocks);
     bool IsCollided(const Block& blocks);
     void AbsorbBlocks(const Block& blocks);

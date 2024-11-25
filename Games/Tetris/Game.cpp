@@ -24,44 +24,24 @@ Game::Game(int FPS) :
         { SignalStop, false },
         { SignalKeyDownPressed, false },
     }),
-    m_IntervalWorks({ { IntervalWorkMovingBlockDown,
-                        { global::Speeds.at(m_CurrentSpeed), [&]() { MoveBlockDown(); } } } })
+    m_IntervalWorks({
+        {
+            IntervalWorkMovingBlockDown,
+            { global::Speeds.at(m_CurrentSpeed),
+              [&]() {
+                  if (!m_IsGameOver) MoveBlockDown();
+              } },
+        },
+    }),
+    m_IsGameOver(false)
 {
     SetTargetFPS(60);
-    MoveBlockCenter();
 }
 
 Game::~Game()
 {
     NotifySignal(SignalStop, true);
     m_Worker.join();
-}
-
-void Game::Draw()
-{
-    m_Grid.Draw();
-    m_CurrentBlock->Draw();
-}
-
-void Test() {};
-
-void Game::HandleInput()
-{
-    switch (GetKeyPressed()) {
-        case KEY_LEFT:
-            MoveBlockLeft();
-            break;
-        case KEY_RIGHT:
-            MoveBlockRight();
-            break;
-        case KEY_DOWN:
-            NotifySignal(SignalKeyDownPressed, true);
-            break;
-        case KEY_UP:
-            m_CurrentBlock->Rotate();
-            Calibrate();
-            break;
-    }
 }
 
 void Game::Loop()
@@ -87,6 +67,48 @@ void Game::Loop()
     }
 }
 
+void Game::Draw()
+{
+    m_Grid.Draw();
+    m_CurrentBlock->Draw();
+}
+
+void Game::HandleInput()
+{
+    auto keyPressed = GetKeyPressed();
+    if (m_IsGameOver) {
+        if (keyPressed == KEY_SPACE)
+            Reset();
+        else
+            return;
+    }
+    switch (keyPressed) {
+        case KEY_LEFT:
+            MoveBlockLeft();
+            break;
+        case KEY_RIGHT:
+            MoveBlockRight();
+            break;
+        case KEY_DOWN:
+            NotifySignal(SignalKeyDownPressed, true);
+            break;
+        case KEY_UP:
+            m_CurrentBlock->Rotate();
+            Calibrate();
+            break;
+    }
+}
+
+void Game::Reset()
+{
+    m_Grid.Clear();
+    m_CurrentBlock.reset(GetRandomBlock().release());
+    m_Score = 0;
+    m_CurrentSpeed = SpeedNormal;
+    m_IntervalWorks[IntervalWorkMovingBlockDown].intervalSecond = global::Speeds.at(m_CurrentSpeed);
+    m_IsGameOver = false;
+}
+
 std::unique_ptr<Block> Game::GetRandomBlock()
 {
     static std::random_device rd;
@@ -95,10 +117,10 @@ std::unique_ptr<Block> Game::GetRandomBlock()
         [&]() { return new BlockO(); }, [&]() { return new BlockS(); }, [&]() { return new BlockT(); },
         [&]() { return new BlockZ(); },
     };
-    return std::unique_ptr<Block>(blockAllocator[rd() % blockAllocator.size()]());
+    auto block = blockAllocator[rd() % blockAllocator.size()]();
+    block->Move((m_Grid.GetWidth() - block->GetWidth()) / 2, 0);
+    return std::unique_ptr<Block>(block);
 }
-
-void Game::MoveBlockCenter() { m_CurrentBlock->Move((m_Grid.GetWidth() - m_CurrentBlock->GetWidth()) / 2, 0); }
 
 void Game::MoveBlockLeft()
 {
@@ -130,10 +152,9 @@ void Game::MoveBlockDown()
         m_Score += m_Grid.CheckClearRow();
 
         m_CurrentBlock.reset(GetRandomBlock().release());
-        MoveBlockCenter();
         if (m_Grid.IsCollided(*m_CurrentBlock)) {
-            NotifySignal(SignalStop, true);
-            fmt::print("Game Over. Score: {}\n", m_Score);
+            m_IsGameOver = true;
+            fmt::print("Game Over!\n");
         }
     }
 }
