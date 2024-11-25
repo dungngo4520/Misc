@@ -10,26 +10,22 @@ enum OutOfBoundDirection { OutOfBoundsNone, OutOfBoundsLeft, OutOfBoundsRight, O
 
 struct GridTile {
     bool Occupied = false;
-    Color Color = global::Colors[ColorDarkGray];
+    Color Color = global::Colors.at(ColorDarkGray);
 };
 
 class Grid {
 public:
     Grid(int rows, int columns);
-
     void Draw();
-
     OutOfBoundDirection IsOutOfBounds(const Block& blocks);
     bool IsCollided(const Block& blocks);
-
     void AbsorbBlocks(const Block& blocks);
-    int CheckClearRow();
-
-    inline unsigned int GetWidth() const { return static_cast<unsigned int>(m_grids[0].size()); }
-    inline unsigned int GetHeight() const { return static_cast<unsigned int>(m_grids.size()); }
+    unsigned int CheckClearRow();
+    inline unsigned int GetWidth() const { return static_cast<unsigned int>(m_Tiles[0].size()); }
+    inline unsigned int GetHeight() const { return static_cast<unsigned int>(m_Tiles.size()); }
 
 private:
-    std::vector<std::vector<GridTile>> m_grids;
+    std::vector<std::vector<GridTile>> m_Tiles;
 };
 
 #endif  // GRID_H

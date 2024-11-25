@@ -7,34 +7,34 @@
 #include <vector>
 
 Block::Block(const std::map<enum Rotate, std::vector<Position>>& cells) :
-    m_rotate(Rotate0),
-    m_position({ 0, 0 }),
-    m_cells(cells)
+    m_Rotate(Rotate0),
+    m_Position({ 0, 0 }),
+    m_Cells(cells)
 {
 }
 
 void Block::Draw()
 {
-    auto cells = m_cells.at(m_rotate);
+    auto cells = m_Cells.at(m_Rotate);
     for (auto&& cell : cells) {
-        cell += m_position;
+        cell += m_Position;
         DrawRectangle(
             cell.x * global::CellSize + 1,
             cell.y * global::CellSize + 1,
             global::CellSize - 1,
             global::CellSize - 1,
-            global::Colors[GetColorId()]
+            global::Colors.at(GetColorId())
         );
     }
 }
 
-void Block::Rotate() { m_rotate = (enum Rotate)((m_rotate + 1) % RotateMax); }
+void Block::Rotate() { m_Rotate = (enum Rotate)((m_Rotate + 1) % RotateMax); }
 
-void Block::Move(int x, int y) { m_position += Position{ x, y }; }
+void Block::Move(int x, int y) { m_Position += Position{ x, y }; }
 
 unsigned int Block::GetWidth() const
 {
-    auto cells = m_cells.at(m_rotate);
+    auto cells = m_Cells.at(m_Rotate);
     int maxX = 0, minX = UINT_MAX;
     for (auto&& cell : cells) {
         maxX = std::max(maxX, cell.x);
@@ -45,7 +45,7 @@ unsigned int Block::GetWidth() const
 
 unsigned int Block::GetHeight() const
 {
-    auto cells = m_cells.at(m_rotate);
+    auto cells = m_Cells.at(m_Rotate);
     int maxY = 0, minY = UINT_MAX;
     for (auto&& cell : cells) {
         maxY = std::max(maxY, cell.y);

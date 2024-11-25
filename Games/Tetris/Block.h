@@ -7,9 +7,7 @@
 #include <vector>
 
 class Block {
-    friend class Grid;
-
-public:
+protected:
     enum BlockId { BlockIdI, BlockIdJ, BlockIdL, BlockIdO, BlockIdS, BlockIdT, BlockIdZ };
     enum Rotate { Rotate0, Rotate90, Rotate180, Rotate270, RotateMax };
 
@@ -18,16 +16,17 @@ public:
     void Draw();
     void Rotate();
     void Move(int x, int y);
-
     unsigned int GetWidth() const;
     unsigned int GetHeight() const;
-
-protected:
+    enum Rotate GetRotate() const { return m_Rotate; }
+    Position GetPosition() const { return m_Position; }
+    const std::map<enum Rotate, std::vector<Position>>& GetCells() const { return m_Cells; }
     virtual ColorId GetColorId() const { return ColorDarkGray; }
 
-    std::atomic<enum Rotate> m_rotate;
-    Position m_position;
-    std::map<enum Rotate, std::vector<Position>> m_cells;
+protected:
+    std::atomic<enum Rotate> m_Rotate;
+    Position m_Position;
+    std::map<enum Rotate, std::vector<Position>> m_Cells;
 };
 
 class BlockL : public Block {

@@ -14,7 +14,6 @@
 class Game {
     enum SignalType { SignalStop, SignalKeyDownPressed };
     enum IntervalWorkType { IntervalWorkMovingBlockDown };
-
     struct IntervalWork {
         double intervalSecond;
         std::function<void()> work;
@@ -23,34 +22,28 @@ class Game {
 public:
     Game(int FPS);
     ~Game();
-
     void Draw();
     void HandleInput();
     void Loop();
 
 private:
+    Grid m_Grid;
+    std::unique_ptr<Block> m_CurrentBlock;
+    SpeedType m_CurrentSpeed;
+    unsigned int m_Score;
+    std::thread m_Worker;
+    std::condition_variable m_CV;
+    std::mutex m_SignalMutex;
+    std::map<SignalType, bool> m_Signals;
+    std::map<IntervalWorkType, IntervalWork> m_IntervalWorks;
+
+private:
+    std::unique_ptr<Block> GetRandomBlock();
     void MoveBlockCenter();
     void MoveBlockLeft();
     void MoveBlockRight();
     void MoveBlockDown();
-
-    std::unique_ptr<Block> GetRandomBlock();
     void Calibrate();
-
-    Grid m_grid;
-    std::unique_ptr<Block> m_currentBlock;
-    SpeedType m_currentSpeed;
-
-    int m_score;
-
-    std::thread m_worker;
-
-    std::condition_variable m_cvSignal;
-    std::mutex m_signalMutex;
-    std::map<SignalType, bool> m_signals;
-
-    std::map<IntervalWorkType, IntervalWork> m_intervalWorks;
-
     void Worker();
     void NotifySignal(SignalType signal, bool value);
 };
