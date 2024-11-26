@@ -4,7 +4,6 @@
         {
             "name": "vcpkg",
             "hidden": true,
-            "generator": "Ninja",
             "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "cl.exe",

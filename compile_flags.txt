@@ -1,0 +1,6 @@
+--include-directory=build/vcpkg_installed/x86-windows/include
+--language=c++
+--debug
+--optimize=3
+--warn-=all
+-fno-exceptions
