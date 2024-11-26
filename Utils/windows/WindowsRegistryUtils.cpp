@@ -8,7 +8,7 @@ bool utils::windows::registry::RenameKey(HKEY rootKey, const std::wstring& sourc
 {
     auto status = RegRenameKey(rootKey, source.c_str(), target.c_str());
     if (status != ERROR_SUCCESS) {
-        printf(__FUNCTION__ ": Failed to rename key. Error: %d\n", status);
+        printf("%s: Failed to rename key. Error: %ld\n", __func__, status);
         return false;
     }
     return true;

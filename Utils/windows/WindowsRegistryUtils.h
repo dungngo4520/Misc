@@ -12,6 +12,5 @@ namespace utils {
             bool RenameKey(HKEY rootKey, const std::wstring& source, const std::wstring& target);
             bool EnumerateKey(HKEY rootKey, const std::wstring& keyPath);
         };  // namespace registry
-
     };  // namespace windows
 };  // namespace utils

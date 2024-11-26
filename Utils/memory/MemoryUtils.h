@@ -1,5 +1,4 @@
 #pragma once
-#include <memory>
 namespace utils {
     namespace memory {
         // clang-format off
@@ -14,4 +13,4 @@ namespace utils {
         // clang-format on
 
     };  // namespace memory
-};      // namespace utils
+};  // namespace utils

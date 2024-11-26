@@ -1,6 +1,5 @@
 #pragma once
 #include <stdio.h>
-
 #include <string>
 #include <memory>
 #include <vector>
@@ -29,4 +28,4 @@ namespace utils {
         std::vector<unsigned char> StringToByteArray(const std::string& str);
         std::vector<unsigned char> StringToByteArray(const std::wstring& str);
     };  // namespace string
-};      // namespace utils
+};  // namespace utils
