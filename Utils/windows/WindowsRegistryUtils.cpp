@@ -1,6 +1,5 @@
 #include "WindowsRegistryUtils.h"
-
-#include <stdio.h>
+#include "../Define.h"
 
 #pragma comment(lib, "Advapi32.lib")
 
@@ -8,7 +7,7 @@ bool utils::windows::registry::RenameKey(HKEY rootKey, const std::wstring& sourc
 {
     auto status = RegRenameKey(rootKey, source.c_str(), target.c_str());
     if (status != ERROR_SUCCESS) {
-        printf("%s: Failed to rename key. Error: %ld\n", __func__, status);
+        UtilsLog("%s: Failed to rename key. Error: %ld\n", __func__, status);
         return false;
     }
     return true;

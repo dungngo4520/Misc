@@ -1,9 +1,9 @@
 #include "WindowsNtdll.h"
+#include "../Define.h"
 
 #include <ntstatus.h>
 
 #include <assert.h>
-#include <stdio.h>
 
 #include <map>
 #include <string>
@@ -41,13 +41,13 @@ std::map<std::string, FARPROC> FunctionMap;
 NTSTATUS utils::windows::ntdll::Load()
 {
     if (libNTDLL != NULL) {
-        printf(__FUNCTION__ ": Library ntdll.dll already loaded\n");
+        UtilsLog("%s: Library ntdll.dll already loaded\n", __func__);
         return STATUS_SUCCESS;
     }
 
     libNTDLL = LoadLibraryExW(L"ntdll.dll", NULL, LOAD_LIBRARY_SEARCH_SYSTEM32);
     if (libNTDLL == NULL) {
-        printf(__FUNCTION__ ": Failed to load library ntdll.dll. Error: %d\n", GetLastError());
+        UtilsLog("%s: Failed to load library ntdll.dll. Error: %d\n", __func__, GetLastError());
         return STATUS_UNSUCCESSFUL;
     }
 
